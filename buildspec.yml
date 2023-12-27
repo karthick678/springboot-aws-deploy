@@ -1,14 +1,14 @@
 version: 0.2
 phases:
   pre_build:
-    commends:
+    commands:
       - echo Logging in to Amazon ECR...
       - aws --version
       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 655905524303.dkr.ecr.ap-south-1.amazonaws.com
       - REPOSITORY_URI=655905524303.dkr.ecr.ap-south-1.amazonaws.com/spring-demo-ecr
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
-   commends:
+   commands:
      - echo Build started on 'date'
      - echo building the Jar file
      - mvn clean install
@@ -16,7 +16,7 @@ phases:
      - docker build -t $REPOSITORY_URI:latest .
      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
-    commends:
+    commands:
       - echo Build started on 'date'
       - echo pushing to repo
       - docker push $REPOSITORY_URI:latest
